@@ -1,0 +1,19 @@
+import tensorflow as tf
+from tensorflow.keras.datasets import imdb
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+(x_train, y_train), (x_test, y_test) = imdb.load_data(num_words=5000)
+
+x_train = pad_sequences(x_train, maxlen=200)
+x_test = pad_sequences(x_test, maxlen=200)
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Embedding(5000, 32),
+    tf.keras.Flatten(),
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+model.fit(x_train, y_train, epochs=3)
+print("Accuracy:", model.evaluate(x_test, y_test)[1])
