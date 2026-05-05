@@ -1,0 +1,22 @@
+import tensorflow as tf
+from tensorflow.keras.applications import ResNet50
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Flatten
+base = ResNet50(weights='imagenet', include_top=False, input_shape=(224,224,3))
+for l in base.layers: l.trainable = False
+model = Sequential([
+ base,
+ Flatten(),
+ Dense(128, activation='relu'),
+ Dense(10, activation='softmax')
+])
+model.compile(optimizer='adam', loss='categorical_crossentropy',
+metrics=['accuracy'])
+
+"""
+from tensorflow.keras.datasets import fashion_mnist
+from tensorflow.keras.utils import to_categorical
+(x, y), _ = fashion_mnist.load_data()
+x = tf.image.resize(tf.expand_dims(x[:128], -1), (224,224)); x = tf.image.grayscale_to_rgb(x) / 255.
+model.fit(x, to_categorical(y[:128], 10), epochs=2)
+"""
